@@ -16,13 +16,14 @@
 using namespace std;
 
 int main(int argc, char *argv[])
-{cout<<"notepad:"<<endl;
+{
+    cout << "notepad:" << endl;
 
     const int ram = 100;
     const int hardisk = 1000;
     const int core = 1;
 
-    if (argc != 2)
+    if (argc != 4)
     { // check for correct number of arguments
         fprintf(stderr, "Usage: %s <shm_id>\n", argv[0]);
         exit(1);
@@ -38,19 +39,17 @@ int main(int argc, char *argv[])
     }
 
     // signal(SIGKILL, sigterm_handler);
-    sem_t *sem = sem_open("/n1", O_CREAT | O_RDWR, 1);
-    sem_t *sem1 = sem_open("/n2", O_CREAT | O_RDWR, 0);
+    sem_t *sem = sem_open(argv[2], O_CREAT | O_RDWR, 1);
+    sem_t *sem1 = sem_open(argv[3], O_CREAT | O_RDWR, 0);
 
     // sem_wait(sem);
     shared_task->pid = getpid(); // write process ID to shared memory
     shared_task->ram = 100;
-    shared_task->hard  = hardisk;
+    shared_task->hard = hardisk;
     shared_task->noOfcores = core;
     sem_post(sem);
     cout << "Waiting for signal" << endl;
     sem_wait(sem1);
-
-    
 
     shmdt(shared_task); // detach shared memory segment
 
