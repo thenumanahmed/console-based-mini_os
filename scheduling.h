@@ -17,14 +17,8 @@ class Scheduling
 {
 public:
     static queue<Task *> readyQueue;
-    // static queue<Task *> readySusQueue;
     static Task *running;
-    // static queue<Task *> runningSusQueue;
-
     static void shortTermSchedular();
-
-    // pop the the when exited through the terminal or through the
-    // task manager
 };
 queue<Task *> Scheduling::readyQueue;
 Task *Scheduling::running = nullptr;
@@ -38,7 +32,6 @@ void Scheduling::shortTermSchedular()
 
         if (!readyQueue.empty())
         {
-            // cout << "Starting the swapping" << endl;
             if (running == nullptr)
             {
                 running = readyQueue.back();
@@ -63,7 +56,5 @@ void Scheduling::shortTermSchedular()
                 readyQueue.push(paused);
             }
         }
-        // cout << "Doing nothing" << endl;
-        // semaphore up
     }
 }
