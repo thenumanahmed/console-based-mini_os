@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     const int ram = 100;
     const int hardisk = 1000;
     const int core = 1;
-
+    string n = "Time";
     if (argc != 4)
     { // check for correct number of arguments
         fprintf(stderr, "Usage: %s <shm_id>\n", argv[0]);
@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
     sem_t *sem = sem_open(argv[2], O_CREAT | O_RDWR, 1);
     sem_t *sem1 = sem_open(argv[3], O_CREAT | O_RDWR, 0);
 
-    // shared_task->name = argv[1];
+    memset(shared_task->name, '\0', sizeof(shared_task->name));
+    strcpy(shared_task->name, "Time");
     shared_task->pid = getpid(); // write process ID to shared memory
     shared_task->ram = 100;
     shared_task->hard = hardisk;

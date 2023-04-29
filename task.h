@@ -1,12 +1,13 @@
 #pragma once
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
 class Task
 {
 public:
-    string name;
+    char name[20];
     pid_t pid;
     long int ram;
     long int hard;
@@ -14,9 +15,19 @@ public:
     bool allowRun;
     // string sharedMemName;
 public:
-    Task(string name, long int ram, long int hdd, int noOfcores, pid_t pid)
+    Task()
     {
-        this->name = name;
+        strcpy(this->name, "");
+        this->ram = 0;
+        this->hard = 0;
+        this->pid = 0;
+        this->noOfcores = 0;
+        this->allowRun = false;
+    }
+
+    Task(const char *n, long int ram, long int hdd, int noOfcores, pid_t pid)
+    {
+        strcpy(this->name, n);
         this->ram = ram;
         this->hard = hard;
         this->pid = pid;

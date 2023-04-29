@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
     sem_t *sem1 = sem_open(argv[3], O_CREAT | O_RDWR, 0);
 
     // sem_wait(sem);
-    // shared_task->name = argv[1];
+    memset(shared_task->name, '\0', sizeof(shared_task->name));
+    strcpy(shared_task->name, "Calculator");
     shared_task->pid = getpid(); // write process ID to shared memory
     shared_task->ram = 100;
     shared_task->hard = hardisk;

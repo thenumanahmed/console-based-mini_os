@@ -43,7 +43,7 @@ void Scheduling::shortTermSchedular()
             {
                 running = readyQueue.back();
                 int r = kill(running->pid, SIGCONT);
-                cout << "running null conitnue " << running->pid << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl; // to continue the process
+                cout << "running null conitnue " << running->name << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl; // to continue the process
                 readyQueue.pop();
             }
             else
@@ -57,8 +57,8 @@ void Scheduling::shortTermSchedular()
 
                 int pauseRes = kill(paused->pid, SIGSTOP);
                 int runningRes = kill(running->pid, SIGCONT);
-                cout << "Pasue Result of " << paused->pid << " Result" << ((pauseRes == 0) ? "Succes" : "Process not Exist") << endl;
-                cout << "Running Result of " << running->pid << " Result" << ((runningRes == 0) ? "Succes" : "Process not Exist") << endl;
+                cout << "Pasue Result of " << paused->name << " Result" << ((pauseRes == 0) ? "Succes" : "Process not Exist") << endl;
+                cout << "Running Result of " << running->name << " Result" << ((runningRes == 0) ? "Succes" : "Process not Exist") << endl;
 
                 readyQueue.push(paused);
             }
