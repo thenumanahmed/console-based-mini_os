@@ -60,19 +60,17 @@ int main(int n, char **argv)
         }
         else if (choice == 0)
         {
-            cout << Shared::shared_tasks[0]->pid << endl;
-            cout << (Shared::shared_tasks[0]->pid == 0) << endl;
             if (Shared::shared_tasks[0]->pid == 0)
             {
+                cout << "PID IS 0" << endl;
                 openTask("./calculator", 0, "c1", "c2");
             }
-
             else
             {
-
+                cout << "PID IS Not 0" << endl;
                 closeTask(0);
+                // Send the SIGUSR1 signal to the process to minimize it
             }
-            cout << Shared::shared_tasks[0]->pid << endl;
         }
         else if (choice == 1)
         {
@@ -90,19 +88,31 @@ int main(int n, char **argv)
         }
         else if (choice == 2)
         {
-            cout << Shared::shared_tasks[2]->pid << endl;
             if (Shared::shared_tasks[2]->pid == 0)
+            {
+                cout << "PID IS 0" << endl;
                 openTask("./time", 2, "t1", "t2");
+            }
             else
+            {
+                cout << "PID IS Not 0" << endl;
                 closeTask(2);
+                // Send the SIGUSR1 signal to the process to minimize it
+            }
         }
         else if (choice == 3)
         {
-            cout << Shared::shared_tasks[3]->pid << endl;
-            if (Shared::shared_tasks[0]->pid == 0)
+            if (Shared::shared_tasks[3]->pid == 0)
+            {
+                cout << "PID IS 0" << endl;
                 openTask("./calender", 3, "cl1", "cl2");
+            }
             else
+            {
+                cout << "PID IS Not 0" << endl;
                 closeTask(3);
+                // Send the SIGUSR1 signal to the process to minimize it
+            }
         }
     } while (true);
     cout << "operating system is shutting down" << endl;
@@ -156,13 +166,16 @@ void *initializeMidTermSchedular(void *)
 
 void closeTask(const int index)
 {
-    if (kill(Shared::shared_tasks[index]->pid, SIGKILL) == 0)
-    {
-        Shared::shared_tasks[index]->pid = 0;
-        Shared::shared_tasks[index]->ram = 0;
-        memset(Shared::shared_tasks[index]->name, '\0', sizeof(Shared::shared_tasks[index]->name));
-        strcpy(Shared::shared_tasks[index]->name, "");
-        Shared::shared_tasks[index]->hard = 0;
-        Shared::shared_tasks[index]->noOfcores = 0;
-    }
+    cout << "kill" << endl;
+
+    kill(Shared::shared_tasks[index]->pid, SIGKILL);
+
+    Shared::shared_tasks[index]
+        ->pid = 0;
+    Shared::shared_tasks[index]->ram = 0;
+    memset(Shared::shared_tasks[index]->name, '\0', sizeof(Shared::shared_tasks[index]->name));
+    strcpy(Shared::shared_tasks[index]->name, "");
+    Shared::shared_tasks[index]->hard = 0;
+    Shared::shared_tasks[index]->noOfcores = 0;
+    cout << "hill" << endl;
 }
