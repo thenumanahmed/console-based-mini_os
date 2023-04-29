@@ -12,71 +12,15 @@
 
 #include "task.h"
 #include "scheduling.h"
+#include "share_memory.h"
 #include "config.h"
 
 using namespace std;
 
-void openTask(const char *obj, const char *sem_str_1, const char *sem_str_2)
-{
-    int shm_id = shmget(IPC_PRIVATE, sizeof(Task), IPC_CREAT | 0666); // create shared memory segment
+void openTask(const char *obj, const int index, const char *sem_str_1, const char *sem_str_2);
+void closeTask(const int index);
 
-    if (shm_id < 0)
-    { // check for errors
-        perror("shmget");
-        exit(1);
-    }
-    sem_t *sem1 = sem_open(sem_str_1, O_CREAT | O_RDWR, 0666, 0);
-    sem_t *sem2 = sem_open(sem_str_2, O_CREAT | O_RDWR, 0666, 1);
-
-    pid_t pid = fork(); // create a child process using fork()
-    if (pid == 0)
-    { // in the child process
-        char shm_id_str[20];
-        sprintf(shm_id_str, "%d", shm_id);                                                                               // convert shm_id to string
-        execlp("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", obj, shm_id_str, sem_str_1, sem_str_2, NULL); // launch a new terminal and run ./calculator with shm_id as an argument
-        perror("execlp");                                                                                                // check for errors
-        exit(1);
-    }
-    else if (pid < 0)
-    { // check for errors
-        perror("fork error");
-        exit(1);
-    }
-    else
-    { // in the parent process
-
-        Task *shared_task = (Task *)shmat(shm_id, NULL, 0); // attach the shared memory segment
-
-        if ((intptr_t)shared_task == -1)
-        { // check for errors
-            perror("shmat");
-            exit(1);
-        }
-        cout << "hi";
-
-        sem_wait(sem1);
-
-        // check ram
-        // shared_task->isAllowed = SystemConfigs().canExecute(shared_task);
-        // shared_task->allowRun = true;
-        // if (shared_task->isAllowed)
-        // {
-        //     shmdt(shared_task); // detach the shared memory segment
-        //     shmctl(shm_id, IPC_RMID, NULL);
-        //     return;
-        // }
-        sem_post(sem2);
-        Scheduling::readyQueue.push(shared_task);
-    }
-    cout << "Exiting CALCULATOR";
-}
-
-void *initializeMidTermSchedular(void *)
-{
-    Scheduling::shortTermSchedular();
-    int *n;
-    return n;
-}
+void *initializeMidTermSchedular(void *);
 
 int main(int n, char **argv)
 {
@@ -84,6 +28,8 @@ int main(int n, char **argv)
     const int noOfCores = 1;
     const long int RAM = 100;
     const long int HDD = 500;
+
+    cout << Shared::initialize();
 
     SystemConfigs *hardwareConfigs = new SystemConfigs();
 
@@ -112,26 +58,111 @@ int main(int n, char **argv)
         { // shut down option selected
             break;
         }
+        else if (choice == 0)
+        {
+            cout << Shared::shared_tasks[0]->pid << endl;
+            cout << (Shared::shared_tasks[0]->pid == 0) << endl;
+            if (Shared::shared_tasks[0]->pid == 0)
+            {
+                openTask("./calculator", 0, "c1", "c2");
+            }
+
+            else
+            {
+
+                closeTask(0);
+            }
+            cout << Shared::shared_tasks[0]->pid << endl;
+        }
         else if (choice == 1)
         {
-            // s
-            openTask("./calculator", "c1", "c2");
+            if (Shared::shared_tasks[1]->pid == 0)
+            {
+                cout << "PID IS 0" << endl;
+                openTask("./notepad", 1, "n1", "n2");
+            }
+            else
+            {
+                cout << "PID IS Not 0" << endl;
+                closeTask(1);
+                // Send the SIGUSR1 signal to the process to minimize it
+            }
         }
         else if (choice == 2)
         {
-            openTask("./notepad", "n1", "n2");
+            cout << Shared::shared_tasks[2]->pid << endl;
+            if (Shared::shared_tasks[2]->pid == 0)
+                openTask("./time", 2, "t1", "t2");
+            else
+                closeTask(2);
         }
         else if (choice == 3)
         {
-            openTask("./time", "t1", "t2");
-        }
-        else if (choice == 4)
-        {
-            openTask("./calender", "cl1", "cl2");
+            cout << Shared::shared_tasks[3]->pid << endl;
+            if (Shared::shared_tasks[0]->pid == 0)
+                openTask("./calender", 3, "cl1", "cl2");
+            else
+                closeTask(3);
         }
     } while (true);
     cout << "operating system is shutting down" << endl;
     // Scheduling::readyQueue.pop();
 
     return 0;
+}
+
+void openTask(const char *obj, const int index, const char *sem_str_1, const char *sem_str_2)
+{
+    sem_t *sem1 = sem_open(sem_str_1, O_CREAT | O_RDWR, 0666, 0);
+    sem_t *sem2 = sem_open(sem_str_2, O_CREAT | O_RDWR, 0666, 1);
+
+    pid_t pid = fork(); // create a child process using fork()
+    if (pid == 0)
+    {
+        char shm_id_str[20];
+        sprintf(shm_id_str, "%d", Shared::shared_id[index]);                                                             // c                                                                                              // in the child process
+        execlp("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", obj, shm_id_str, sem_str_1, sem_str_2, NULL); // launch a new terminal and run ./calculator with shm_id as an argument
+        perror("execlp");                                                                                                // check for errors
+        exit(1);
+    }
+    else if (pid < 0)
+    { // check for errors
+        perror("fork error");
+        exit(1);
+    }
+    else
+    { // in the parent process
+        sem_wait(sem1);
+        // check ram
+        // shared_task->isAllowed = SystemConfigs().canExecute(shared_task);
+        // shared_task->allowRun = true;
+        // if (shared_task->isAllowed)
+        // {
+        //     shmdt(shared_task); // detach the shared memory segment
+        //     shmctl(shm_id, IPC_RMID, NULL);
+        //     return;
+        // }
+        sem_post(sem2);
+        Scheduling::readyQueue.push(Shared::shared_tasks[index]);
+    }
+}
+
+void *initializeMidTermSchedular(void *)
+{
+    Scheduling::shortTermSchedular();
+    int *n;
+    return n;
+}
+
+void closeTask(const int index)
+{
+    if (kill(Shared::shared_tasks[index]->pid, SIGKILL) == 0)
+    {
+        Shared::shared_tasks[index]->pid = 0;
+        Shared::shared_tasks[index]->ram = 0;
+        memset(Shared::shared_tasks[index]->name, '\0', sizeof(Shared::shared_tasks[index]->name));
+        strcpy(Shared::shared_tasks[index]->name, "");
+        Shared::shared_tasks[index]->hard = 0;
+        Shared::shared_tasks[index]->noOfcores = 0;
+    }
 }
