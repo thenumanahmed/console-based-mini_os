@@ -1,24 +1,28 @@
 #pragma once
-#include<iostream> 
+#include <iostream>
 
 using namespace std;
 
-class Task{ 
+class Task
+{
 public:
     string name;
     pid_t pid;
     long int ram;
     long int hard;
     int noOfcores;
+    bool allowRun;
     // string sharedMemName;
 public:
-    Task(string name, long int ram, long int hdd,  int noOfcores, pid_t pid){
+    Task(string name, long int ram, long int hdd, int noOfcores, pid_t pid)
+    {
         this->name = name;
         this->ram = ram;
         this->hard = hard;
         this->pid = pid;
-        noOfcores = noOfcores;
+        this->noOfcores = noOfcores;
+        allowRun = false;
     }
 };
 
-// is exitable ->> as main program is not exit able 
+// is exitable ->> as main program is not exit able

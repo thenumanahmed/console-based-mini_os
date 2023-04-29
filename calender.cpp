@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     sem_t *sem = sem_open(argv[2], O_CREAT | O_RDWR, 1);
     sem_t *sem1 = sem_open(argv[3], O_CREAT | O_RDWR, 0);
 
-    // sem_wait(sem);
+    // shared_task->name = argv[1];
     shared_task->pid = getpid(); // write process ID to shared memory
     shared_task->ram = 100;
     shared_task->hard = hardisk;

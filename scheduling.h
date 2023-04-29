@@ -38,46 +38,32 @@ void Scheduling::shortTermSchedular()
 
         if (!readyQueue.empty())
         {
-            cout << "Starting the swapping" << endl;
-            cout << readyQueue.size() << endl;
-            Task *r = readyQueue.back();
-            cout << r << endl;
+            // cout << "Starting the swapping" << endl;
+            if (running == nullptr)
+            {
+                running = readyQueue.back();
+                int r = kill(running->pid, SIGCONT);
+                cout << "running null conitnue " << running->pid << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl; // to continue the process
+                readyQueue.pop();
+            }
+            else
+            {
 
-            // if (running == nullptr)
-            // {
-            //     // cout << "running->pid " << running->pid << endl;
+                Task *paused = running;
+                pid_t pid = paused->pid;
 
-            //     // cout << "Running was null" << endl;
-            //     // cout << "before  raedy";
-            //     // cout << readyQueue.size() << endl;
-            //     // running = readyQueue.back();
-            //     // cout << "Ruuning is NUll " << (running == nullptr) << endl;
-            //     // cout << "after raedy";
-            //     // cout << "running->pid " << running->pid << endl;
-            //     // int r = kill(running->pid, SIGCONT); // to continue the process
-            //     // cout << "Process is running with pid :::: ";
-            //     // cout << running->pid << endl;
-            //     // cout << r << endl;
-            //     // readyQueue.pop();
-            // }
-            // else
-            // {
-            //     cout << "running was not null" << endl;
+                running = readyQueue.front();
+                readyQueue.pop();
 
-            //     Task *paused = running;
-            //     pid_t pid = paused->pid;
+                int pauseRes = kill(paused->pid, SIGSTOP);
+                int runningRes = kill(running->pid, SIGCONT);
+                cout << "Pasue Result of " << paused->pid << " Result" << ((pauseRes == 0) ? "Succes" : "Process not Exist") << endl;
+                cout << "Running Result of " << running->pid << " Result" << ((runningRes == 0) ? "Succes" : "Process not Exist") << endl;
 
-            //     running = readyQueue.front();
-            //     readyQueue.pop();
-            //     cout << "Process with pid was pasued: " << paused->pid << endl;
-            //     cout << "Process with pid was added in running: " << running->pid << endl;
-            //     kill(paused->pid, SIGSTOP);  // to pause the running process
-            //     kill(running->pid, SIGCONT); // to continue the process
-
-            //     readyQueue.push(paused);
-            // }
+                readyQueue.push(paused);
+            }
         }
-        cout << "Doing nothing" << endl;
+        // cout << "Doing nothing" << endl;
         // semaphore up
     }
 }

@@ -29,7 +29,6 @@ void openTask(const char *obj, const char *sem_str_1, const char *sem_str_2)
     sem_t *sem2 = sem_open(sem_str_2, O_CREAT | O_RDWR, 0666, 1);
 
     pid_t pid = fork(); // create a child process using fork()
-    cout << "HIIIII" << obj << endl;
     if (pid == 0)
     { // in the child process
         char shm_id_str[20];
@@ -56,27 +55,18 @@ void openTask(const char *obj, const char *sem_str_1, const char *sem_str_2)
         cout << "hi";
 
         sem_wait(sem1);
-        // cout << "hi";
-        // cout << "ram" << shared_task->ram << endl;
-        cout << "PID is " << shared_task->pid << endl;
-        // cout << "Ram " << shared_task->ram << endl;
-        cout << "waiting 3" << endl;
 
-        sem_post(sem2);
-
-        // semahpre wait
-        //  if( hardwareConfigs->canExecute(shared_task) ){
-        // cout << kill(shared_task->pid, SIGSTOP); // to pause the running process
-        Scheduling::readyQueue.push(shared_task);
-        // sleep(1);
-        // kill(shared_task->pid, SIGSTOP);
+        // check ram
+        // shared_task->isAllowed = SystemConfigs().canExecute(shared_task);
+        // shared_task->allowRun = true;
+        // if (shared_task->isAllowed)
+        // {
+        //     shmdt(shared_task); // detach the shared memory segment
+        //     shmctl(shm_id, IPC_RMID, NULL);
+        //     return;
         // }
-        // cout<<"Process was paused with pid: "<<shared_task->pid<<endl;
-        // semaphore up
-
-        shmdt(shared_task);             // detach the shared memory segment
-        shmctl(shm_id, IPC_RMID, NULL); // remove the shared memory segment
-        cout << "Exiting CALCULATOR";
+        sem_post(sem2);
+        Scheduling::readyQueue.push(shared_task);
     }
     cout << "Exiting CALCULATOR";
 }

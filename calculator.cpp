@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    const int ram = 100;
+    const int ram = 100000;
     const int hardisk = 1000;
     const int core = 1;
 
@@ -41,15 +41,19 @@ int main(int argc, char *argv[])
     sem_t *sem1 = sem_open(argv[3], O_CREAT | O_RDWR, 0);
 
     // sem_wait(sem);
+    // shared_task->name = argv[1];
     shared_task->pid = getpid(); // write process ID to shared memory
     shared_task->ram = 100;
     shared_task->hard = hardisk;
     shared_task->noOfcores = core;
     sem_post(sem);
-    cout << "Waiting for signal" << endl;
-    sem_wait(sem1);
 
-    shmdt(shared_task); // detach shared memory segment
+    // if (!shared_task->isAllowed)
+    // {
+    //     exit(0);
+    // }
+
+    sem_wait(sem1);
 
     // Calulator Code
 
