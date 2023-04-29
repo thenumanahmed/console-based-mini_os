@@ -124,6 +124,7 @@ int main(int n, char **argv)
         }
         else if (choice == 1)
         {
+            // s
             openTask("./calculator", "c1", "c2");
         }
         else if (choice == 2)
