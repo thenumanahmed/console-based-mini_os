@@ -34,11 +34,13 @@ void Scheduling::shortTermSchedular()
             cout << "Context Switching" << endl;
             if (running == nullptr)
             {
+                // no process running and process exist in ready queue
+
                 running = readyQueue.back();
                 readyQueue.pop();
                 if (running->pid == 9999)
                 {
-                    // task is reset
+                    // task is closed
                     cout << "Errrorr" << endl;
                     running = nullptr;
                 }
@@ -47,7 +49,6 @@ void Scheduling::shortTermSchedular()
                     int r = kill(running->pid, SIGCONT);
                     cout << "running null conitnue " << running->pid << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl;
                 }
-                // to continue the process
             }
             else
             {
