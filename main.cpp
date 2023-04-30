@@ -28,7 +28,6 @@ int main(int n, char **argv)
     const int noOfCores = 1;
     const long int RAM = 100;
     const long int HDD = 500;
-
     cout << Shared::initialize();
 
     SystemConfigs *hardwareConfigs = new SystemConfigs();
@@ -169,9 +168,9 @@ void closeTask(const int index)
     cout << "kill" << endl;
 
     kill(Shared::shared_tasks[index]->pid, SIGKILL);
-
     Shared::shared_tasks[index]
         ->pid = 0;
+
     Shared::shared_tasks[index]->ram = 0;
     memset(Shared::shared_tasks[index]->name, '\0', sizeof(Shared::shared_tasks[index]->name));
     strcpy(Shared::shared_tasks[index]->name, "");
