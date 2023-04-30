@@ -12,7 +12,8 @@
 
 using namespace std;
 
-void function(){
+void function()
+{
     int shm_id = shmget(IPC_PRIVATE, sizeof(Task), IPC_CREAT | 0666); // create shared memory segment
 
     if (shm_id < 0)
@@ -25,7 +26,7 @@ void function(){
     sem_t *sem1 = sem_open("/calucaltor1", O_CREAT | O_RDWR, 0666, 1);
     pid_t child_pid = fork(); // create a child process using fork()
 
-    if (child_pid == 0)
+    if (child_pid == 9999)
     { // in the child process
         char shm_id_str[20];
         sprintf(shm_id_str, "%d", shm_id); // convert shm_id to string
@@ -61,15 +62,12 @@ void function(){
 
         sem_post(sem1);
 
-       
-
         cout << "Child Process Killeddddd yahooooooooo" << endl;
 
         shmdt(shared_task);             // detach the shared memory segment
         shmctl(shm_id, IPC_RMID, NULL); // remove the shared memory segment
-        cout<<"removed shared mem"<<endl;
+        cout << "removed shared mem" << endl;
     }
-
 }
 
 int main(int n, char **argv)

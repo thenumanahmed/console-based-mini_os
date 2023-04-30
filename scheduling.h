@@ -35,7 +35,7 @@ void Scheduling::shortTermSchedular()
             if (running == nullptr)
             {
                 running = readyQueue.back();
-                if (running->pid == 0)
+                if (running->pid == 9999)
                 {
                     cout << "Errrorr" << endl;
                 }
@@ -52,11 +52,11 @@ void Scheduling::shortTermSchedular()
                 running = readyQueue.front();
                 readyQueue.pop();
 
-                if (running->pid == 0)
+                if (running->pid == 9999)
                 {
                     cout << "Errrorr" << endl;
                 }
-                if (paused->pid == 0)
+                if (paused->pid == 9999)
                 {
                     cout << "Errrorr" << endl;
                 }

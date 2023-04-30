@@ -31,12 +31,8 @@ public:
 public:
     Task()
     {
-        strcpy(this->name, "");
-        this->ram = 0;
-        this->hard = 0;
-        this->pid = 0;
-        this->noOfcores = 0;
-        this->allowRun = false;
+        cout << "Constructor" << endl;
+        resetTask();
     }
 
     Task(const char *n, long int ram, long int hdd, int noOfcores, pid_t pid)
@@ -46,6 +42,16 @@ public:
         this->hard = hard;
         this->pid = pid;
         this->noOfcores = noOfcores;
+        allowRun = false;
+    }
+
+    void resetTask()
+    {
+        strcpy(this->name, "");
+        pid = 9999;
+        ram = 0;
+        hard = 0;
+        noOfcores = 0;
         allowRun = false;
     }
 

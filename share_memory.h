@@ -13,36 +13,31 @@
 #include <sys/shm.h>
 
 #include "task.h"
+#include "task_object.h"
 
 using namespace std;
 
 class Shared
 {
 public:
-    static Task *shared_tasks[15];
-    static int shared_id[15];
+    static TaskObject *shared_tasks[15];
+
     static bool initialize();
 };
 
-Task *Shared::shared_tasks[15];
-int Shared::shared_id[15];
+TaskObject *Shared::shared_tasks[15];
 
 bool Shared::initialize()
 {
-    const int num_shared_segments = 4; // Change this to create more or less shared memory segments.
-
-    // Creating shared memory
-    for (int i = 0; i < num_shared_segments; i++)
-    {
-        shared_id[i] = shmget(IPC_PRIVATE, sizeof(Task), IPC_CREAT | 0666); // Create shared memory segment
-        if (shared_id[i] < 0)
-            exit(1);
-
-        // Getting shared memory address
-        shared_tasks[i] = reinterpret_cast<Task *>(shmat(shared_id[i], nullptr, 0)); // Attach the shared memory segment
-        if (shared_tasks[i] == reinterpret_cast<Task *>(-1))
-            exit(1);
-    }
+    shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    shared_tasks[1] = new TaskObject("./notepad", "not1", "not2");
+    shared_tasks[2] = new TaskObject("./time", "tim1", "time2");
+    shared_tasks[3] = new TaskObject("./calender", "clr1", "clr2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
 
     return 0;
 }
