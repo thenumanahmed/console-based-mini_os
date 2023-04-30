@@ -12,20 +12,31 @@
 
 #include "task.h"
 #include "scheduling.h"
-#include "share_memory.h"
+// #include "share_memory.h"
 #include "config.h"
+#include "task_object.h"
 
 using namespace std;
 
 void *initializeMidTermSchedular(void *);
 
-int main(int n, char **argv)
-{
-    // my code starts
+
+
+class Driver{
+    TaskObject *shared_tasks[15];
+    bool initialize();
+    void buttonClicked(int index);
+
+    
+
+public:
+    Driver(){
+        cout<<"in driver program"<<endl;
+        // my code starts
     const int noOfCores = 1;
     const long int RAM = 100;
     const long int HDD = 500;
-    cout << Shared::initialize();
+    initialize();
 
     SystemConfigs *hardwareConfigs = new SystemConfigs();
 
@@ -56,12 +67,20 @@ int main(int n, char **argv)
         }
         else if (choice >= 0 && choice < 4)
         {
-            Shared::buttonClicked(choice);
+            buttonClicked(choice);
         }
 
     } while (true);
     cout << "operating system is shutting down" << endl;
     // Scheduling::readyQueue.pop();
+    }
+
+    
+};
+
+int main(int n, char **argv)
+{
+    Driver d1;
 
     return 0;
 }
@@ -72,3 +91,39 @@ void *initializeMidTermSchedular(void *)
     int *n;
     return n;
 }
+
+bool Driver::initialize()
+{
+    shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    shared_tasks[1] = new TaskObject("./notepad", "not1", "not2");
+    shared_tasks[2] = new TaskObject("./time", "tim1", "time2");
+    shared_tasks[3] = new TaskObject("./calender", "clr1", "clr2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+    // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
+
+    return 0;
+}
+
+void Driver::buttonClicked(int index)
+{
+    if (shared_tasks[index]->pid() == 9999)
+    {
+        // to open: Task not present
+        shared_tasks[index]->openTask();
+    }
+    else if ((kill(shared_tasks[index]->pid(), 0) != 0))
+    {
+        // To Open: Task was not close properly
+        shared_tasks[index]->task->resetTask();
+        shared_tasks[index]->openTask();
+    }
+    else
+    {
+        // to Close: Task Exist
+        shared_tasks[index]->closeTask();
+    }
+}
+
