@@ -23,6 +23,8 @@ public:
     static TaskObject *shared_tasks[15];
 
     static bool initialize();
+
+    static void buttonClicked(int index);
 };
 
 TaskObject *Shared::shared_tasks[15];
@@ -40,4 +42,24 @@ bool Shared::initialize()
     // shared_tasks[0] = new TaskObject("./calculator", "cal1", "cal2");
 
     return 0;
+}
+
+void Shared::buttonClicked(int index)
+{
+    if (shared_tasks[index]->pid() == 9999)
+    {
+        // to open: Task not present
+        shared_tasks[index]->openTask();
+    }
+    else if ((kill(shared_tasks[index]->pid(), 0) != 0))
+    {
+        // To Open: Task was not close properly
+        shared_tasks[index]->task->resetTask();
+        shared_tasks[index]->openTask();
+    }
+    else
+    {
+        // to Close: Task Exist
+        shared_tasks[index]->closeTask();
+    }
 }

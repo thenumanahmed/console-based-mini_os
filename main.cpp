@@ -56,17 +56,7 @@ int main(int n, char **argv)
         }
         else if (choice >= 0 && choice < 4)
         {
-            cout << "Procces PID " << Shared::shared_tasks[choice]->pid() << endl;
-            if (Shared::shared_tasks[choice]->pid() == 9999)
-            {
-                cout << "PID IS 0" << endl;
-                Shared::shared_tasks[choice]->openTask();
-            }
-            else
-            {
-                cout << "PID IS Not 9999" << endl;
-                Shared::shared_tasks[choice]->closeTask();
-            }
+            Shared::buttonClicked(choice);
         }
 
     } while (true);

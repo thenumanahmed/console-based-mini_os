@@ -85,6 +85,7 @@ bool TaskObject::openTask()
         const char *s1 = sem1_str.c_str();
         const char *s2 = sem2_str.c_str();
         // execl("./calculator", "calculator", NULL); // c
+        // execlp(c, c, shm_id_str, s1, s2, nullptr);
         execlp("/usr/bin/gnome-terminal", "/usr/bin/gnome-terminal", "--", c, shm_id_str, s1, s2, NULL);
 
         perror("execlp"); // check for errors
@@ -101,6 +102,8 @@ bool TaskObject::openTask()
 
         // TODO:  check resources thaan allow it or not
         sem_post(sem2);
+
+        // process is allowed
         Scheduling::readyQueue.push(task);
         return 0;
     }
