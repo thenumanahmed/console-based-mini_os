@@ -27,45 +27,59 @@ void Scheduling::shortTermSchedular()
     while (true)
     {
         // semaphore wait
-        sleep(1);
+        sleep(100);
 
         if (!readyQueue.empty())
         {
-
+            cout << "Context Switching" << endl;
             if (running == nullptr)
             {
                 running = readyQueue.back();
+                readyQueue.pop();
                 if (running->pid == 9999)
                 {
+                    // task is reset
                     cout << "Errrorr" << endl;
+                    running = nullptr;
                 }
-                int r = kill(running->pid, SIGCONT);
-                cout << "running null conitnue " << running->pid << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl; // to continue the process
-                readyQueue.pop();
+                else
+                {
+                    int r = kill(running->pid, SIGCONT);
+                    cout << "running null conitnue " << running->pid << " Result" << ((r == 0) ? "Succes" : "Process not Exist") << endl;
+                }
+                // to continue the process
             }
             else
             {
 
-                Task *paused = running;
-                pid_t pid = paused->pid;
+                Task *toPause = running;
+                pid_t pid = toPause->pid;
 
+                // get front of queue
                 running = readyQueue.front();
                 readyQueue.pop();
 
-                if (running->pid == 9999)
+                if (running->pid != 9999 && kill(running->pid, SIGCONT) == 0)
                 {
-                    cout << "Errrorr" << endl;
+                    // Process Continue Succefully
                 }
-                if (paused->pid == 9999)
+                else
                 {
-                    cout << "Errrorr" << endl;
+                    // Process Not Continue || not exist
+                    running->resetTask();
+                    running = nullptr;
                 }
-                int pauseRes = kill(paused->pid, SIGSTOP);
-                int runningRes = kill(running->pid, SIGCONT);
-                cout << "Pasue Result of " << paused->pid << " Result" << ((pauseRes == 0) ? "Succes" : "Process not Exist") << endl;
-                cout << "Running Result of " << running->pid << " Result" << ((runningRes == 0) ? "Succes" : "Process not Exist") << endl;
 
-                readyQueue.push(paused);
+                if (toPause->pid != 9999 && kill(toPause->pid, SIGSTOP) == 0)
+                {
+                    // Process succefully Stop
+                    readyQueue.push(toPause);
+                }
+                else
+                {
+                    // Process Not Stop || not exist
+                    toPause->resetTask();
+                }
             }
         }
     }
