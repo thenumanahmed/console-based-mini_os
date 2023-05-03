@@ -125,5 +125,4 @@ void Driver::buttonClicked(int index)
         // to Close: Task Exist
         shared_tasks[index]->closeTask();
     }
-}
-
+} 

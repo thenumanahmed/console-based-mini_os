@@ -104,7 +104,7 @@ bool TaskObject::openTask()
         sem_post(sem2);
 
         // process is allowed
-        Scheduling::readyQueue.push(task);
+        Scheduling::readyQueue.push_back(task);
         return 0;
     }
     return -1;
