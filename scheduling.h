@@ -28,7 +28,7 @@ public:
 
 };
 vector<Task *> Scheduling::readyQueue;
-vector<Task *>Scheduling::runningQueue ;
+// vector<Task *>Scheduling::runningQueue ;
 vector<Task *>Scheduling::runningQueue ;
 void Scheduling::shortTermSchedular()
 {
